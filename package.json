@@ -1,0 +1,63 @@
+{
+  "name": "@solcreek/adapter-next-core",
+  "version": "0.1.0",
+  "description": "Next.js-specific adapter utilities shared by @solcreek/adapter-creek (CF Workers) and @solcreek/adapter-creekd (creekd self-host)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./cache-handler": {
+      "default": "./dist/cache-handler.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.test.*",
+    "!dist/**/*.map"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "creek",
+    "creekd",
+    "adapter",
+    "next",
+    "nextjs",
+    "cache-handler",
+    "self-host"
+  ],
+  "author": "SolCreek",
+  "license": "Apache-2.0",
+  "homepage": "https://creek.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solcreek/adapter-next-core.git"
+  },
+  "peerDependencies": {
+    "next": ">=15"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2",
+    "vitest": "^4.1.2"
+  },
+  "packageManager": "pnpm@10.33.0"
+}

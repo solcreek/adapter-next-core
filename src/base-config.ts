@@ -64,13 +64,13 @@ export function applyBaseModifyConfig(
   // path does NOT exist because pnpm only symlinks direct deps.
   //
   // Falls back to the dev-time path the adapter passed when the consumer
-  // tree doesn't have @solcreek/adapter-core resolvable (e.g. building
+  // tree doesn't have @solcreek/adapter-next-core resolvable (e.g. building
   // inside the adapter monorepo itself).
   let resolvedCacheHandlerPath = opts.cacheHandlerPath;
   try {
     const fromProject = createRequire(projectDir + "/_");
     resolvedCacheHandlerPath = fromProject.resolve(
-      "@solcreek/adapter-core/cache-handler",
+      "@solcreek/adapter-next-core/cache-handler",
     );
   } catch {
     // Module not resolvable from this project — stick with the

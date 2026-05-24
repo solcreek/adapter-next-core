@@ -13,7 +13,7 @@
  *
  * Used by both @solcreek/adapter-creek and @solcreek/adapter-creekd
  * as the default cacheHandler — adapters wire it into next.config via
- *   cacheHandler: require.resolve("@solcreek/adapter-core/cache-handler")
+ *   cacheHandler: require.resolve("@solcreek/adapter-next-core/cache-handler")
  *
  * Persistent / cross-instance caches are out of scope here; an
  * adapter that needs one (e.g. CF Durable Objects, a SQLite-backed

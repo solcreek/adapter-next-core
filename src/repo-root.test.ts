@@ -42,11 +42,11 @@ describe("findRepoRoot", () => {
     // isolated path so this stays scoped.)
     const start = path.join(root, "apps", "web");
     const result = findRepoRoot(start);
-    // Either we hit a marker outside our tempdir (host machine), or we
-    // bottom out at start. Both are acceptable — the contract is "don't
-    // crash, return something usable". The important behaviour is the
-    // first three cases above.
-    expect(result).toBeTypeOf("string");
+    // Either we bottom out at start, or we hit a marker outside our tempdir
+    // (a workspace above the host's tmpdir). Never another directory inside
+    // the tree, which has no marker.
+    const outsideTree = path.relative(root, result).startsWith("..");
+    expect(result === start || outsideTree).toBe(true);
   });
 
   it("tolerates malformed package.json without crashing", () => {

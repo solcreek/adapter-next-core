@@ -22,3 +22,10 @@ export {
   detectPackagesNeedingTranspile,
   looksLikeJsxInJs,
 } from "./transpile-detect.js";
+
+// Framework-neutral helpers both Next adapters use. They lived in
+// @solcreek/adapter-core, which is deprecated up to 0.2.0 and from 0.3.0 a
+// shim that itself depends on this package; owning them here drops that
+// dependency.
+export { findRepoRoot } from "./repo-root.js";
+export { type DeployManifestBase } from "./manifest-base.js";

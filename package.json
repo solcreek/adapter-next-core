@@ -46,9 +46,6 @@
     "type": "git",
     "url": "https://github.com/solcreek/adapter-next-core.git"
   },
-  "dependencies": {
-    "@solcreek/adapter-core": "^0.2.0"
-  },
   "peerDependencies": {
     "next": ">=15"
   },

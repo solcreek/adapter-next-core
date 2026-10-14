@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import * as path from "node:path";
 import type { NextAdapter } from "next";
 
-import { findRepoRoot } from "@solcreek/adapter-core";
+import { findRepoRoot } from "./repo-root.js";
 
 import { detectPackagesNeedingTranspile } from "./transpile-detect.js";
 

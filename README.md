@@ -5,7 +5,7 @@ Next.js-specific adapter utilities shared between:
 - [`@solcreek/adapter-creek`](https://github.com/solcreek/adapter-creek) — Next.js → Cloudflare Workers
 - [`@solcreek/adapter-creekd`](https://github.com/solcreek/adapter-creekd) — Next.js → [`creekd`](https://github.com/solcreek/creekd) self-host
 
-These helpers used to live in `@solcreek/adapter-core` alongside framework-neutral types like `DeployManifestBase` and `findRepoRoot`. They moved out so non-Next adapters (e.g. [`@solcreek/svelte-adapter`](https://github.com/solcreek/svelte-adapter), future Vue / Solid adapters) can depend on a clean `adapter-core` without inheriting Next.js's transpilation / cacheHandler / config-mutation surface.
+These helpers used to live in `@solcreek/adapter-core`, together with `findRepoRoot` and the `DeployManifestBase` type. All of them live here now; `adapter-core` is deprecated up to 0.2.0 and a re-export shim from 0.3.0 (see [below](#relationship-to-solcreekadapter-core)). Adapters that need only the creekd manifest contract depend on [`@solcreek/creekd-manifest`](https://www.npmjs.com/package/@solcreek/creekd-manifest) instead.
 
 ## What's in here
 
@@ -13,6 +13,8 @@ These helpers used to live in `@solcreek/adapter-core` alongside framework-neutr
 |---|---|
 | `applyBaseModifyConfig` | Shared `next.config` mutations every Next adapter needs: auto-transpile JSX-in-JS deps, monorepo `outputFileTracingRoot`, TS error suppression, `cacheHandler` wire-up. |
 | `detectPackagesNeedingTranspile`, `collectEntryFiles`, `looksLikeJsxInJs` | Heuristic JSX-in-JS detection across the user's dep tree, used to seed `next.config.transpilePackages`. |
+| `findRepoRoot` | Walks up from a directory to the monorepo root (`pnpm-workspace.yaml`, `turbo.json`, or a `package.json` with `workspaces`); falls back to the start directory. |
+| `DeployManifestBase` (type) | Fields every adapter's deploy manifest carries (version, framework, build ID, Next version, adapter, middleware/prerender flags). |
 | `CacheHandler` (default export from `@solcreek/adapter-next-core/cache-handler`) | In-memory ISR / fetch-cache handler suitable for single-instance Next deployments. Adapters wire it in via `next.config.cacheHandler`. Tag-based stale-while-revalidate behaviour matches [opennextjs-cloudflare#1168](https://github.com/opennextjs/opennextjs-cloudflare/issues/1168). |
 
 Persistent / cross-instance caches (KV, SQLite, Durable Objects) are out of scope here. Adapters that need one ship their own and point `cacheHandler` at it; this package's handler is the lightweight default.
@@ -54,14 +56,13 @@ export function createAdapter(options: MyAdapterOptions): NextAdapter {
 
 ## Relationship to `@solcreek/adapter-core`
 
-`adapter-core` is intentionally framework-neutral after the split:
+`@solcreek/adapter-core` is deprecated up to 0.2.0; from 0.3.0 it is a re-export shim. Its surface now lives in successor packages:
 
-- `findRepoRoot` (monorepo workspace traversal) — still in `adapter-core` because it's not Next-specific
-- `DeployManifestBase` (cross-target manifest shape) — still in `adapter-core`
-- `CreekdDeployManifest` (creekd-specific manifest types) — moved to [`@solcreek/creekd-manifest`](https://www.npmjs.com/package/@solcreek/creekd-manifest)
-- Next-specific helpers (this package's surface) — moved here
+- Next-specific helpers — this package
+- `findRepoRoot` (monorepo workspace traversal) and the `DeployManifestBase` type (cross-target manifest shape) — this package, exported from the root
+- `CreekdDeployManifest` (creekd-specific manifest types) — [`@solcreek/creekd-manifest`](https://www.npmjs.com/package/@solcreek/creekd-manifest)
 
-Layering: `adapter-next-core → adapter-core` (no cycle). Non-Next adapters depend only on `adapter-core`.
+This package depends on neither. Layering: `adapter-core` (0.3.0 shim) → `adapter-next-core`, so new code imports from here directly.
 
 ## License
 

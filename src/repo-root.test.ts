@@ -50,10 +50,11 @@ describe("findRepoRoot", () => {
   });
 
   it("tolerates malformed package.json without crashing", () => {
-    writeFileSync(path.join(root, "package.json"), "{ not valid json");
+    // The malformed manifest sits below the marker, so the walk has to parse
+    // it (and survive) before it reaches pnpm-workspace.yaml.
     writeFileSync(path.join(root, "pnpm-workspace.yaml"), "");
     mkdirSync(path.join(root, "apps", "web"), { recursive: true });
-    // Should still pick up via pnpm-workspace.yaml.
+    writeFileSync(path.join(root, "apps", "package.json"), "{ not valid json");
     expect(findRepoRoot(path.join(root, "apps", "web"))).toBe(root);
   });
 });

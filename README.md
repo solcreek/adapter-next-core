@@ -54,14 +54,13 @@ export function createAdapter(options: MyAdapterOptions): NextAdapter {
 
 ## Relationship to `@solcreek/adapter-core`
 
-`adapter-core` is intentionally framework-neutral after the split:
+`@solcreek/adapter-core` is deprecated up to 0.2.0; from 0.3.0 it is a re-export shim. Its surface now lives in successor packages:
 
-- `findRepoRoot` (monorepo workspace traversal) — still in `adapter-core` because it's not Next-specific
-- `DeployManifestBase` (cross-target manifest shape) — still in `adapter-core`
-- `CreekdDeployManifest` (creekd-specific manifest types) — moved to [`@solcreek/creekd-manifest`](https://www.npmjs.com/package/@solcreek/creekd-manifest)
-- Next-specific helpers (this package's surface) — moved here
+- Next-specific helpers — this package
+- `findRepoRoot` (monorepo workspace traversal) and the `DeployManifestBase` type (cross-target manifest shape) — this package, exported from the root
+- `CreekdDeployManifest` (creekd-specific manifest types) — [`@solcreek/creekd-manifest`](https://www.npmjs.com/package/@solcreek/creekd-manifest)
 
-Layering: `adapter-next-core → adapter-core` (no cycle). Non-Next adapters depend only on `adapter-core`.
+This package depends on neither. Layering: `adapter-core` (0.3.0 shim) → `adapter-next-core`, so new code imports from here directly.
 
 ## License
 

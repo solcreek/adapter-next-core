@@ -1,9 +1,16 @@
-import { describe, expect, it, beforeEach, afterEach } from "vitest";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { describe, expect, it, beforeEach, afterEach, vi } from "vitest";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
 
 import { findRepoRoot } from "./repo-root.js";
+
+// existsSync is spied on so one test can make every marker lookup miss,
+// whatever lies above the host's tmpdir. Every other test uses the real fs.
+vi.mock("node:fs", async (importOriginal) => {
+  const fs = await importOriginal<typeof import("node:fs")>();
+  return { ...fs, existsSync: vi.fn(fs.existsSync) };
+});
 
 describe("findRepoRoot", () => {
   let root: string;
@@ -47,6 +54,18 @@ describe("findRepoRoot", () => {
     // the tree, which has no marker.
     const outsideTree = path.relative(root, result).startsWith("..");
     expect(result === start || outsideTree).toBe(true);
+  });
+
+  it("returns exactly startDir when no directory up to the root has a marker", () => {
+    const spy = vi.mocked(existsSync);
+    const real = spy.getMockImplementation()!;
+    spy.mockImplementation(() => false);
+    try {
+      const start = path.join(root, "apps", "web");
+      expect(findRepoRoot(start)).toBe(start);
+    } finally {
+      spy.mockImplementation(real);
+    }
   });
 
   it("tolerates malformed package.json without crashing", () => {
